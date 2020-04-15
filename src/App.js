@@ -21,12 +21,32 @@ function App() {
   const [email, setEmail] = useState("");
   const [joined, setJoined] = useState(false);
   const [msg, setMsg] = useState("");
-  const [messages, setMessages] = useState({});
+  const [messages, setMessages] = useState([]);
   const [scrolled, setScrolled] = useState(false);
 
   const chatRoom = db.ref().child("chatrooms").child("global");
   const messagesEndRef = useRef(null);
+  const messagesDivRef = useRef(null);
 
+  function elementInViewport(el) {
+    var top = el.offsetTop;
+    var left = el.offsetLeft;
+    var width = el.offsetWidth;
+    var height = el.offsetHeight;
+
+    while (el.offsetParent) {
+      el = el.offsetParent;
+      top += el.offsetTop;
+      left += el.offsetLeft;
+    }
+
+    return (
+      top < window.pageYOffset + window.innerHeight &&
+      left < window.pageXOffset + window.innerWidth &&
+      top + height > window.pageYOffset &&
+      left + width > window.pageXOffset
+    );
+  }
   const scrollToBottom = () => {
     if (messagesEndRef.current && !scrolled) {
       console.log(scrolled, "qweqweqwe");
@@ -34,17 +54,20 @@ function App() {
     }
   };
   useEffect(scrollToBottom, [messages]);
+  useEffect(scrollToBottom, []);
   useEffect(() => {
-    const handleNewMessages = (snap) => {
-      if (snap.val()) {
-        setMessages(snap.val());
+    const handleNewMessages = (data) => {
+      if (data.val()) {
+        setMessages((old) => {
+          return [...old, data.val()];
+        });
       }
     };
-    chatRoom.on("value", handleNewMessages);
+    chatRoom.on("child_added", handleNewMessages);
     return () => {
-      chatRoom.off("value", handleNewMessages);
+      chatRoom.off("child_added", handleNewMessages);
     };
-  });
+  }, []);
 
   const handleNameChange = (e) => setNickname(e.target.value);
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -89,25 +112,34 @@ function App() {
         <div className="chat">
           <div
             className="messages"
+            ref={messagesDivRef}
             onWheel={(e) => {
+              if (elementInViewport(messagesEndRef.current)) {
+                setScrolled(false);
+              } else {
+                setScrolled(true);
+              }
+            }}
+            onTouchMove={(e) => {
               setScrolled(true);
             }}
           >
-            {Object.keys(messages).map((message) => {
-              if (messages[message]["sender"] === nickname)
+            {messages.map((message) => {
+              // console.log(message);
+              if (message["sender"] === nickname)
                 return (
                   <div className="message">
-                    <span id="me">{messages[message]["sender"]} :</span>
+                    <span id="me">{message["sender"]} :</span>
                     <br />
-                    {messages[message]["msg"]}
+                    {message["msg"]}
                   </div>
                 );
               else
                 return (
                   <div className="message">
-                    <span id="sender">{messages[message]["sender"]} :</span>
+                    <span id="sender">{message["sender"]} :</span>
                     <br />
-                    {messages[message]["msg"]}
+                    {message["msg"]}
                   </div>
                 );
             })}
@@ -117,6 +149,8 @@ function App() {
             <button
               id="scrollbutton"
               onClick={(e) => {
+                console.log("bnmbnm");
+                messagesEndRef.current.scrollIntoView();
                 setScrolled(false);
               }}
             >
