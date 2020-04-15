@@ -121,7 +121,11 @@ function App() {
               }
             }}
             onTouchMove={(e) => {
-              setScrolled(true);
+              if (elementInViewport(messagesEndRef.current)) {
+                setScrolled(false);
+              } else {
+                setScrolled(true);
+              }
             }}
           >
             {messages.map((message) => {
