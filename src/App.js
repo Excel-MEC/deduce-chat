@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+  import React, { useState, useEffect, useRef } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import {ReactComponent as Down} from './down.svg'
 import * as firebase from "firebase";
 
 const firebaseConfig = {
@@ -133,24 +134,28 @@ function App() {
               // console.log(message);
               if (message["sender"] === nickname)
                 return (
-                  <div className="message">
-                    <span id="me">{message["sender"]} :</span>
-                    <br />
-                    {message["msg"]}
+                  <div className="my-message">
+                    {/*<span id="me">{message["sender"]} :</span>*/}
+                    {/*<br />*/}
+                    <div className={"msg-text"}>
+                      {message["msg"]}
+                    </div>
                   </div>
                 );
               else
                 return (
                   <div className="message">
-                    <span id="sender">{message["sender"]} :</span>
+                    <span id="sender">{message["sender"]}</span>
                     <br />
-                    {message["msg"]}
+                    <div className={"msg-text"}>
+                      {message["msg"]}
+                    </div>
                   </div>
                 );
             })}
             <div ref={messagesEndRef} />
           </div>
-          {scrolled ? (
+          {/*{scrolled ? (
             <button
               id="scrollbutton"
               onClick={(e) => {
@@ -163,14 +168,27 @@ function App() {
             </button>
           ) : (
             ""
+          )}*/}
+          {scrolled ? (
+              <Down
+                  id="scroll-icon"
+                  onClick={(e) => {
+                    console.log("bnmbnm");
+                    messagesEndRef.current.scrollIntoView();
+                    setScrolled(false);
+                  }}
+              />
+          ) : (
+              ""
           )}
+          <div className={'chat-input'}>
           <input
             placeholder="msg"
             onChange={handleMsgChange}
             onKeyDown={handleKeyDown}
             value={msg}
           />
-          <br />
+          </div>
         </div>
       )}
     </div>
