@@ -1,9 +1,8 @@
-
-div{
-  box-sizing: border-box!important
+div {
+  box-sizing: border-box !important;
 }
 
-.App{
+.App {
   background-color: #212121;
   height: 100vh;
 }
@@ -15,8 +14,6 @@ div{
   width: 100%;
   flex-direction: column;
 }
-
-
 
 .joinForm {
 }
@@ -38,7 +35,6 @@ div{
   background-color: white;
 }
 
-
 .chat-input input {
   box-sizing: border-box;
   padding: 10px 30px;
@@ -52,22 +48,21 @@ div{
   background-color: #666;
 }
 
-.chat-input input::placeholder{
+.chat-input input::placeholder {
   color: #bcbcbc;
 }
 
-.chat-input input:focus{
+.chat-input input:focus {
   outline: none;
   border: none;
 }
 
-.chat-input{
+.chat-input {
   width: 100%;
   padding: 10px;
   margin-left: auto;
   margin-right: auto;
 }
-
 
 .messages {
   flex-grow: 1;
@@ -76,28 +71,29 @@ div{
   flex-direction: column;
   font-size: 20px;
   z-index: 0;
+  padding-bottom: 30px;
 }
 
 .message {
   align-self: flex-start;
   position: relative;
-  padding: 5px 10px ;
+  padding: 5px 10px;
   background-color: #434343;
   border-radius: 5px;
   max-width: 80%;
   min-width: 30%;
   height: auto;
-  margin: 5px 20px ;
+  margin: 5px 20px;
 }
 
-.message::before{
+.message::before {
   z-index: -1;
-  content: '';
+  content: "";
   left: -5px;
   position: absolute;
   width: 20px;
   height: 20px;
-  top:0.5em;
+  top: 0.5em;
   background-color: #434343;
   color: #dedede;
   transform: skew(40deg, 20deg);
@@ -107,39 +103,39 @@ div{
   background-color: #434343;
   align-self: flex-end;
   position: relative;
-  padding: 5px 10px ;
+  padding: 5px 10px;
   border-radius: 5px;
   max-width: 80%;
   min-width: 30%;
-  margin: 5px 15px ;
+  margin: 5px 15px;
 }
 
-.my-message div{
+.my-message div {
   text-align: right;
   float: right;
   padding-right: 5px;
 }
 
-.my-message::before{
+.my-message::before {
   z-index: -1;
-  content: '';
+  content: "";
   right: -4px;
   position: absolute;
   width: 20px;
   height: 20px;
-  top:0.5em;
+  top: 0.5em;
   background-color: #434343;
   color: #dedede;
   transform: skew(-20deg, -40deg);
 }
 
-#sender{
+#sender {
   color: #d32f2f;
   font-weight: 500;
   font-size: 0.9em;
 }
 
-.msg-text{
+.msg-text {
   width: 100%;
   min-height: 2em;
   font-size: 0.8em;
@@ -152,8 +148,8 @@ div{
   color: green;
 }
 
-#scroll-icon{
-  color:#ababab;
+#scroll-icon {
+  color: #ababab;
   height: 20px;
   right: 25px;
   bottom: 100px;

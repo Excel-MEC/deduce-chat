@@ -1,7 +1,7 @@
-  import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import {ReactComponent as Down} from './down.svg'
+import { ReactComponent as Down } from "./down.svg";
 import * as firebase from "firebase";
 
 const firebaseConfig = {
@@ -29,24 +29,8 @@ function App() {
   const messagesEndRef = useRef(null);
   const messagesDivRef = useRef(null);
 
-  function elementInViewport(el) {
-    var top = el.offsetTop;
-    var left = el.offsetLeft;
-    var width = el.offsetWidth;
-    var height = el.offsetHeight;
-
-    while (el.offsetParent) {
-      el = el.offsetParent;
-      top += el.offsetTop;
-      left += el.offsetLeft;
-    }
-
-    return (
-      top < window.pageYOffset + window.innerHeight &&
-      left < window.pageXOffset + window.innerWidth &&
-      top + height > window.pageYOffset &&
-      left + width > window.pageXOffset
-    );
+  function scrolledToBottom(el) {
+    return el.scrollHeight - el.scrollTop - el.clientHeight == 0;
   }
   const scrollToBottom = () => {
     if (messagesEndRef.current && !scrolled) {
@@ -65,7 +49,7 @@ function App() {
       }
     };
 
-    chatRoom.endAt().limitToLast(1).on("child_added", handleNewMessages);
+    chatRoom.endAt().limitToLast(25).on("child_added", handleNewMessages);
     return () => {
       chatRoom.off("child_added", handleNewMessages);
     };
@@ -116,18 +100,19 @@ function App() {
             className="messages"
             ref={messagesDivRef}
             onWheel={(e) => {
-              if (elementInViewport(messagesEndRef.current)) {
+              console.log(scrolledToBottom(messagesDivRef.current));
+              if (scrolledToBottom(messagesDivRef.current)) {
                 setScrolled(false);
               } else {
                 setScrolled(true);
               }
             }}
             onTouchMove={(e) => {
-              if (elementInViewport(messagesEndRef.current)) {
-                setScrolled(false);
-              } else {
-                setScrolled(true);
-              }
+              // if (elementInViewport(messagesEndRef.current)) {
+              //   setScrolled(false);
+              // } else {
+              //   setScrolled(true);
+              // }
             }}
           >
             {messages.map((message) => {
@@ -137,9 +122,7 @@ function App() {
                   <div className="my-message">
                     {/*<span id="me">{message["sender"]} :</span>*/}
                     {/*<br />*/}
-                    <div className={"msg-text"}>
-                      {message["msg"]}
-                    </div>
+                    <div className={"msg-text"}>{message["msg"]}</div>
                   </div>
                 );
               else
@@ -147,9 +130,7 @@ function App() {
                   <div className="message">
                     <span id="sender">{message["sender"]}</span>
                     <br />
-                    <div className={"msg-text"}>
-                      {message["msg"]}
-                    </div>
+                    <div className={"msg-text"}>{message["msg"]}</div>
                   </div>
                 );
             })}
@@ -170,24 +151,24 @@ function App() {
             ""
           )}*/}
           {scrolled ? (
-              <Down
-                  id="scroll-icon"
-                  onClick={(e) => {
-                    console.log("bnmbnm");
-                    messagesEndRef.current.scrollIntoView();
-                    setScrolled(false);
-                  }}
-              />
+            <Down
+              id="scroll-icon"
+              onClick={(e) => {
+                console.log("bnmbnm");
+                messagesEndRef.current.scrollIntoView();
+                setScrolled(false);
+              }}
+            />
           ) : (
-              ""
+            ""
           )}
-          <div className={'chat-input'}>
-          <input
-            placeholder="msg"
-            onChange={handleMsgChange}
-            onKeyDown={handleKeyDown}
-            value={msg}
-          />
+          <div className={"chat-input"}>
+            <input
+              placeholder="msg"
+              onChange={handleMsgChange}
+              onKeyDown={handleKeyDown}
+              value={msg}
+            />
           </div>
         </div>
       )}
