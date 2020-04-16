@@ -63,7 +63,8 @@ function App() {
         });
       }
     };
-    chatRoom.on("child_added", handleNewMessages);
+
+    chatRoom.endAt().limitToLast(1).on("child_added", handleNewMessages);
     return () => {
       chatRoom.off("child_added", handleNewMessages);
     };
