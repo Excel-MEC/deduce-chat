@@ -44,7 +44,7 @@ function App() {
       if (data.val()) {
         const size = parseInt(window.localStorage.getItem("size"));
         const msgs = JSON.parse(window.localStorage.getItem("messages")) || [];
-        if (size < 50) {
+        if (size < 200) {
           window.localStorage.setItem("size", JSON.stringify(size + 1));
           window.localStorage.setItem("last", data.val().timestamp);
           window.localStorage.setItem(
@@ -73,7 +73,7 @@ function App() {
     };
     const size = window.localStorage.getItem("size");
     if (size == 0 || size == null) {
-      chatRoom.endAt().limitToLast(50).on("child_added", handleNewMessages);
+      chatRoom.endAt().limitToLast(200).on("child_added", handleNewMessages);
     } else {
       setMessages(JSON.parse(window.localStorage.getItem("messages")));
       chatRoom
