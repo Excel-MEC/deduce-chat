@@ -73,7 +73,7 @@ function App() {
     };
     const size = window.localStorage.getItem("size");
     if (size == 0 || size == null) {
-      chatRoom.endAt().limitToLast(200).on("child_added", handleNewMessages);
+      chatRoom.endAt().limitToLast(100).on("child_added", handleNewMessages);
     } else {
       setMessages(JSON.parse(window.localStorage.getItem("messages")));
       chatRoom
