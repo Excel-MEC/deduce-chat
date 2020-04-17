@@ -34,7 +34,6 @@ function App() {
   }
   const scrollToBottom = () => {
     if (messagesEndRef.current && !scrolled) {
-      console.log(scrolled, "qweqweqwe");
       messagesEndRef.current.scrollIntoView();
     }
   };
@@ -43,13 +42,45 @@ function App() {
   useEffect(() => {
     const handleNewMessages = (data) => {
       if (data.val()) {
-        setMessages((old) => {
-          return [...old, data.val()];
-        });
+        const size = parseInt(window.localStorage.getItem("size"));
+        const msgs = JSON.parse(window.localStorage.getItem("messages")) || [];
+        if (size < 50) {
+          window.localStorage.setItem("size", JSON.stringify(size + 1));
+          window.localStorage.setItem("last", data.val().timestamp);
+          window.localStorage.setItem(
+            "messages",
+            JSON.stringify([...msgs, data.val()])
+          );
+          setMessages((old) => {
+            return [...msgs, data.val()];
+          });
+        } else {
+          window.localStorage.setItem("last", data.val().timestamp);
+          const newMessages = msgs.slice(msgs.length / 2);
+          window.localStorage.setItem(
+            "size",
+            JSON.stringify(newMessages.length + 1)
+          );
+          window.localStorage.setItem(
+            "messages",
+            JSON.stringify([...newMessages, data.val()])
+          );
+          setMessages((old) => {
+            return [...newMessages, data.val()];
+          });
+        }
       }
     };
-
-    chatRoom.endAt().limitToLast(25).on("child_added", handleNewMessages);
+    const size = window.localStorage.getItem("size");
+    if (size == 0 || size == null) {
+      chatRoom.endAt().limitToLast(50).on("child_added", handleNewMessages);
+    } else {
+      setMessages(JSON.parse(window.localStorage.getItem("messages")));
+      chatRoom
+        .orderByChild("timestamp")
+        .startAt(parseInt(window.localStorage.getItem("last")))
+        .on("child_added", handleNewMessages);
+    }
     return () => {
       chatRoom.off("child_added", handleNewMessages);
     };
@@ -71,6 +102,7 @@ function App() {
       chatRoom.push({
         sender: nickname,
         msg,
+        timestamp: Date.now(),
       });
       setMsg("");
     }
@@ -100,7 +132,6 @@ function App() {
             className="messages"
             ref={messagesDivRef}
             onWheel={(e) => {
-              console.log(scrolledToBottom(messagesDivRef.current));
               if (scrolledToBottom(messagesDivRef.current)) {
                 setScrolled(false);
               } else {
@@ -116,7 +147,6 @@ function App() {
             }}
           >
             {messages.map((message) => {
-              // console.log(message);
               if (message["sender"] === nickname)
                 return (
                   <div className="my-message">
@@ -154,7 +184,6 @@ function App() {
             <Down
               id="scroll-icon"
               onClick={(e) => {
-                console.log("bnmbnm");
                 messagesEndRef.current.scrollIntoView();
                 setScrolled(false);
               }}
