@@ -7,7 +7,7 @@ import * as firebase from "firebase";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App name="Aswin" email="aswinmprabhu@gmail.com" />
   </React.StrictMode>,
   document.getElementById("root")
 );
