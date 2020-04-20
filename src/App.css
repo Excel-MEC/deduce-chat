@@ -7,7 +7,7 @@ div {
   height: 100vh;
 }
 
-.chat {
+.chatApp {
   height: 100%;
   overflow: hidden;
   display: flex;
